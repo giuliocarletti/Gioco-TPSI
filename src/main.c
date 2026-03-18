@@ -1,15 +1,21 @@
 #include "raylib.h"
+#include "player.h"
+
+const int TILE = 16; // risuluzione 16x16
+const int TILE_SIZE = TILE*3; // grandezza tile sullo schermo
 
 int main() 
 {
-    InitWindow(800, 450, "Titolo");
+    InitWindow(800, 600, "Gioco TPSI");
     SetTargetFPS(60);
+    Player player = initiPlayer(400, 225, 5, TILE_SIZE);
 
     while (!WindowShouldClose()) 
     {
         BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawText("Schermo vuoto", 190, 200, 20, DARKGRAY);
+        ClearBackground(BLACK);
+        updatePlayer(&player);
+        drawPlayer(player);
         EndDrawing();
     }
 
