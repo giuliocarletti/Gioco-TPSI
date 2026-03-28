@@ -14,6 +14,6 @@ typedef struct {
 
 Terrain initTerrain(int dimx, int dimy, int size);
 void updateTerrain(Terrain *terrain);
-void drawTerrain(Terrain terrain);
+void drawTerrain(Terrain terrain, Vector2 playerWorld);
 
 #endif

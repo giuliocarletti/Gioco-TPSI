@@ -3,8 +3,8 @@
 
 Player initiPlayer(double x, double y, int speed, int size) {
     Player player;
-    player.screen.x = x;
-    player.screen.y = y;
+    player.world.x = x;
+    player.world.y = y;    
     player.speed = speed;
     player.size = size;
     player.walkTexture = LoadTexture("assets/player/ASEPRITE FILE-WALK.png");
@@ -15,6 +15,8 @@ Player initiPlayer(double x, double y, int speed, int size) {
 
 void updatePlayer(Player *player) {   
     float dt = GetFrameTime();
+    player->screen.x = GetScreenWidth()/2;
+    player->screen.y = GetScreenHeight()/2;
     int inputx = 0;
     int inputy = 0;
     player->isMoving = 0;
@@ -36,8 +38,8 @@ void updatePlayer(Player *player) {
     if(magnitude>0) {
         double xDirection = inputx/magnitude;
         double yDirection = inputy/magnitude;
-        player->screen.x += xDirection*player->speed*dt;
-        player->screen.y += yDirection*player->speed*dt;
+        player->world.x += xDirection*player->speed*dt;
+        player->world.y += yDirection*player->speed*dt;
         player->isMoving = 1;
     }    
 }
@@ -51,14 +53,13 @@ void drawPlayer(Player player) {
     */    
     
     int length = player.idleTexture.height; // lunghezza di un quadrato di un frame
-    Rectangle src = {0, 0, player.direction==1? length:-length, length}; // ritaglio dell'immagine
-    Rectangle dst = {player.screen.x, player.screen.y, player.size, player.size}; // dimensione finale
     Texture2D texture = player.isMoving? player.walkTexture:player.idleTexture; // texture da usare
     double deltaAnimTime = 1/(double)(texture.width/length); // calcolo del tempo 1/iFrameDellAnimazione
     double deltaTime = GetTime()-floor(GetTime()); // calcolo del'intervallo di tempo in max di un secondo
     int currentFrame = deltaTime/deltaAnimTime; 
-    src.x = currentFrame*length; // spostamento del ritaglio immagine per il prossimo frame
-    DrawTexturePro(texture, src, dst, (Vector2) {player.size/2,player.size/2}, 0, WHITE);
+    Rectangle src = {currentFrame*length, 0, player.direction==1? length:-length, length}; // ritaglio dell'immagine
+    Rectangle dst = {player.screen.x, player.screen.y, player.size, player.size}; // dimensione finale    
+    DrawTexturePro(texture, src, dst, (Vector2){player.size/2,player.size/2}, 0, WHITE);
 
     char text[50];
     sprintf(text, "Frame animazione player: %i", currentFrame);
