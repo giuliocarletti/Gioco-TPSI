@@ -1,9 +1,7 @@
-#ifndef TERRAING_H
+#ifndef TERRAIN_H
 #define TERRAIN_H
 #include "raylib.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "player.h"
 
 typedef struct {
     Vector2 size;
@@ -13,7 +11,6 @@ typedef struct {
 } Terrain;
 
 Terrain initTerrain(int dimx, int dimy, int size);
-void updateTerrain(Terrain *terrain);
-void drawTerrain(Terrain terrain, Vector2 playerWorld);
+void drawTerrain(Terrain terrain, Player player);
 
 #endif

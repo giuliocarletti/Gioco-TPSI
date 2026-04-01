@@ -1,17 +1,18 @@
 #ifndef PLAYER_H // Serve per includere piu volte il file
 #define PLAYER_H
 #include "raylib.h"
-#include <stdio.h>
 
 typedef struct {
     Vector2 world;
     Vector2 screen;
+    Vector2 scroll;
     int speed;
-    int size;    
-    int isMoving;
+    int size;
+    int state; // 0.idle, 1.walk, 2.jumping    
     int direction;
-    Texture2D walkTexture;
-    Texture2D idleTexture;
+    int showStats;    
+    double timer;
+    Texture2D textures[3];
 } Player;
 
 Player initiPlayer(double x, double y, int speed, int size);
