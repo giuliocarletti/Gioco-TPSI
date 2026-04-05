@@ -20,8 +20,10 @@ typedef struct {
 UIManager initUIManager();
 Panel setupMainScreen();
 Panel setupHUD();
+Panel setupOptionScreen();
 void drawUIManager(UIManager uiManager);
 void updateUIManager(UIManager *uiManager);
+void checkAction(UIManager *uiManager, char *action);
 void unloadUIManager(UIManager *uiManager);
 
 #endif

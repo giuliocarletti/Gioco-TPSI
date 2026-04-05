@@ -19,6 +19,7 @@ typedef struct {
     Color colors[3];
     Rectangle sectionArea;
     Rectangle screenArea;
+    char *action;
 } Button;
 
 typedef struct {    
