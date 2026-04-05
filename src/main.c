@@ -4,41 +4,63 @@
 #include "UIManager.h"
 
 const int TILE = 16; // risuluzione 16x16
-const int TILE_SIZE = TILE*6; // grandezza tile sullo schermo
+const int TILE_SIZE = TILE*8; // grandezza tile sullo schermo
 Player player;
 Terrain terrain;
 UIManager uiManager;
 
-int main() {
-    InitWindow(1000, 750, "Gioco TPSI");
-    SetTargetFPS(120);
-    player = initiPlayer(TILE_SIZE*25, TILE_SIZE*25, TILE_SIZE*2, TILE_SIZE);
-    terrain = initTerrain(50, 50, TILE_SIZE);
-    uiManager = initUIManager();
-    bool updateGame = false;
-    bool drawGame = false;
+void update(bool updateGame);
+void draw(bool drawGame);
+void unload();
 
+int main() {
+    SetExitKey(0); // toglie tasti per l'uscita
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE); // rende ridimensionabile la finestra
+    InitWindow(1000, 750, "Gioco TPSI");
+    SetWindowMinSize(1000, 750); // grandezza minima
+    SetTargetFPS(120);
+    player = initiPlayer(TILE_SIZE*25, TILE_SIZE*25, TILE_SIZE*2, TILE_SIZE); // x, y, velocita, grandezza nello schermo
+    terrain = initTerrain(50, 50, TILE_SIZE); // grandezza terreno in tile, grandezza di un tile
+    uiManager = initUIManager();
+    bool updateGame = false; // aggiorna il gioco
+    bool drawGame = false; // disegna gli aggiornamenti
     while (!WindowShouldClose()) {
-        if(uiManager.currentPanel!=0) {
+        if(uiManager.currentPanel!=0) { // se non sono nel main screen allora fai il loop di gioco
             updateGame = true;
             drawGame = true;
-        }
-        if(updateGame) {
-            updatePlayer(&player);
-        }
-        updateUIManager(&uiManager);
-        BeginDrawing();
-        ClearBackground(BLACK);        
-        if(drawGame) {
-            drawTerrain(terrain, player);
-            drawPlayer(player);
         }        
-        drawUIManager(uiManager);
-        EndDrawing();
-    }        
+        update(updateGame);
+        draw(drawGame);
+    }    
     CloseWindow();
+    unload();
     return 0;
 }
+
+void update(bool updateGame) {
+    if(updateGame) {
+        updatePlayer(&player);
+    }
+    updateUIManager(&uiManager); // aggiorna la ui
+}
+
+void draw(bool drawGame) {
+    BeginDrawing(); 
+    ClearBackground(BLACK);        
+    if(drawGame) {
+        drawTerrain(terrain, player);
+        drawPlayer(player);
+    }        
+    drawUIManager(uiManager);
+    EndDrawing();
+}
+
+void unload() {
+    unloadPlayer(&player);
+    unloadTerrain(&terrain);
+    unloadUIManager(&uiManager);
+}
+
 
 // per fare il make: mingw32-make su windows, make su linux
 // per avviarlo: ./build/raylib-test

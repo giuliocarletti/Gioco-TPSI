@@ -1,7 +1,7 @@
 #include "terrain.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 Terrain initTerrain(int dimx, int dimy, int size) {
     Terrain terrain;
@@ -18,49 +18,52 @@ Terrain initTerrain(int dimx, int dimy, int size) {
             int index = row*dimx+col; // indice
             char *info = strtok(col==0? line:NULL, ","); // la riga viene suddivisa 
             terrain.tileMap[index] = atoi(info); // il dato viene trasformato in int
-            //printf(" %s", info);
-        } 
-        //printf("\n");
+        }         
     }
     fclose(file);
     return terrain; // restituisci il terreno
 }
 
 void drawTerrain(Terrain terrain, Player player) {
-    int resolution = 32;    
-    Texture texture = terrain.tilesTexture;
+    int resolution = 32; // la risoluzione delle texture dei tile (per ora 32x32)
+    Texture texture = terrain.tilesTexture; 
+    int textureCols = texture.width/resolution; // il numero di colonne della texture
     for(int row=0; row<terrain.size.y; row++) {
         for(int col=0; col<terrain.size.x; col++) {
-            int index = row*terrain.size.x+col;
-            int currentTileNum = terrain.tileMap[index];
-            int textureCols = texture.width/resolution;
-            int xTexturePos = currentTileNum%textureCols;
-            int yTexturePos = currentTileNum/textureCols;
-            Vector2 world = {
+            int index = row*terrain.size.x+col; // siccome e' un' array a una dimensione devo calcolare l'inidice
+            int currentTileNum = terrain.tileMap[index]; // il tile da piazzare 
+            int xTexturePos = currentTileNum%textureCols; // il resto e' la posizione orizzontale nell'immagine
+            int yTexturePos = currentTileNum/textureCols; // il risultato e' la posizione verticale nell'immagine
+            Vector2 world = { 
                 col*terrain.tileSize, 
                 row*terrain.tileSize
-            };
+            }; // la posizione nel mondo
             Vector2 screen = {
                 world.x-player.world.x+player.screen.x, 
                 world.y-player.world.y+player.screen.y
-            };
+            }; // la posizione nello schermo
             Rectangle src = {
                 xTexturePos*resolution, 
                 yTexturePos*resolution, 
                 resolution, 
                 resolution
-            };
+            }; // il ritaglio dell'immagine per prendere un solo tile
             Rectangle dst = {
                 (int)screen.x, // cast a int per togliere spaziature inutili
                 (int)screen.y,
                 terrain.tileSize,
                 terrain.tileSize
-            };
-            Vector2 pivot = {
+            }; // la posizione e dimensione finale del tile
+            Vector2 origin = {
                 terrain.tileSize/2,
                 terrain.tileSize/2
-            };
-            DrawTexturePro(texture, src, dst, pivot, 0, WHITE);
+            }; // origine, la parte centrale del tile
+            DrawTexturePro(texture, src, dst, origin, 0, WHITE);
         }
     }
+}
+
+void unloadTerrain(Terrain *terrain) {
+    UnloadTexture(terrain->tilesTexture);
+    free(terrain);
 }

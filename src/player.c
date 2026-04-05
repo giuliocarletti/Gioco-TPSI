@@ -1,6 +1,8 @@
 #include "player.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
 
 Player initiPlayer(double x, double y, int speed, int size) {
     Player player;
@@ -13,25 +15,25 @@ Player initiPlayer(double x, double y, int speed, int size) {
     player.textures[0] = LoadTexture("assets/player/ASEPRITE FILE-IDLE.png");
     player.textures[1] = LoadTexture("assets/player/ASEPRITE FILE-WALK.png");
     player.textures[2] = LoadTexture("assets/player/ASEPRITE FILE-JUMP.png");
-    player.state = 0;
+    player.state = 0; // lo stato sta per l'azione del player (fermo, cammina, ecc.)
     return player;
 }
 
 void updatePlayer(Player *player) {   
     float dt = GetFrameTime();
-    player->scroll.x += (player->world.x-player->scroll.x)*2*dt;
-    player->scroll.y += (player->world.y-player->scroll.y)*2*dt;
-    player->screen.x = GetScreenWidth()/2+(player->world.x-player->scroll.x);
-    player->screen.y = GetScreenHeight()/2+(player->world.y-player->scroll.y);
-    int inputx = 0;
-    int inputy = 0;
+    player->scroll.x += (player->world.x-player->scroll.x)*2*dt; // somma un valore che cresce gradualmente 
+    player->scroll.y += (player->world.y-player->scroll.y)*2*dt; // per dare un animazione di fluidita'
+    player->screen.x = GetScreenWidth()/2+(player->world.x-player->scroll.x); // il player sta al centro dello schermo
+    player->screen.y = GetScreenHeight()/2+(player->world.y-player->scroll.y); // ma con piccole variazioni date da scroll
+    int inputx = 0; // input da tastiera orizzontale
+    int inputy = 0; // input da tastiera verticale
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         inputx = 1;
-        player->direction = 1;
+        player->direction = 1; // direzione 1 e' verso destra
     }
     if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         inputx = -1;
-        player->direction = -1;
+        player->direction = -1; // direzione -1 e' verso sinistra
     }
     if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {
         inputy = -1;
@@ -40,48 +42,48 @@ void updatePlayer(Player *player) {
         inputy = 1;
     }
     if (IsKeyDown(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))  {
-        player->state = 2;
-        player->timer = 0.001;
+        player->state = 2; // azione: salto
+        player->timer = 0.001; // inizio timer
     }
     if (IsKeyPressed(KEY_O))  {
-        player->showStats = player->showStats? 0:1;
+        player->showStats = player->showStats? 0:1; // vedere le stats del player
     }
-    double magnitude = sqrt(inputx*inputx+inputy*inputy);
+    double magnitude = sqrt(inputx*inputx+inputy*inputy); // risoluzione al movimento diagonale
     if(magnitude>0) {
         double xDirection = inputx/magnitude;
         double yDirection = inputy/magnitude;
         player->world.x += xDirection*player->speed*dt;
         player->world.y += yDirection*player->speed*dt;
     }    
-    if(player->timer>0) {
-        player->timer += GetFrameTime();
-        if(player->timer>1) player->timer=0;
-    } else {
-       player->state = magnitude>0? 1:0;
+    if(player->timer>0) { // se il timer e' attivo significa che non e' fermo e non sta camminando
+        player->timer += GetFrameTime(); // perche il timer si attiva soltanto nelle azioni con una durata preimpostata
+        if(player->timer>1) player->timer=0; 
+    } else { // se il timer e' a 0, sta camminando o e' fermo
+       player->state = magnitude>0? 1:0; // a seconda di magnitude si capisce se si sta spostando o no
     }
 }
 
 void drawPlayer(Player player) {    
-    Texture2D texture = player.textures[player.state];
-    int length = texture.height;
+    Texture2D texture = player.textures[player.state]; // prende la texture dello stato attuale (es. se sta fermo sara' 0)
+    int length = texture.height; // lunghezza di un lato di uno sprite (se non si capisce basta guardare l'immagine negli asset)
     double deltaAnimTime = 1/(double)(texture.width/length); // calcolo del tempo 1/iFrameDellAnimazione
-    double deltaTime = GetTime()-floor(GetTime()); // calcolo del'intervallo di tempo in max di un secondo
-    int currentFrame = deltaTime/deltaAnimTime; 
-    int xTexturePos = currentFrame*length;
-    int yTexturePos = 0;
-    Rectangle src = {
+    double deltaTime = GetTime()-floor(GetTime()); // calcolo del'intervallo di tempo tra 0 e 1 secondo
+    int currentFrame = deltaTime/deltaAnimTime; // corrisponde alla divisione dell'intervallo di tempo fratto il tempo necessario per un frame dell'animazione
+    int xTexturePos = currentFrame*length; // per ritaglia lo spritesheet si calcola il frame attuale moltiplicato per la lunghezza di uno sprite
+    int yTexturePos = 0; // gli spritesheet hanno tutti solo una riga e quindi l'altezza e' sempre zero
+    Rectangle src = { // il rettangolo di ritaglio nello spritesheet
         xTexturePos, 
         yTexturePos, 
-        player.direction==1? length:-length, 
+        player.direction==1? length:-length, // a seconda della direzione si ritaglia orizzonalmente specchiato o non
         length
     }; // ritaglio dell'immagine
-    Rectangle dst = {
+    Rectangle dst = { // la grandezza e posizione finale della texture del player
         (int)player.screen.x, 
         (int)player.screen.y, 
         player.size, 
         player.size
     }; // dimensione finale
-    Vector2 pivot = {
+    Vector2 pivot = { // il punto di oringine, in questo caso il centro del player
         player.size/2,
         player.size/2
     }; // punto da cui viene "preso" (il punto di rotazione e posizionamento)
@@ -99,4 +101,11 @@ void drawPlayer(Player player) {
         sprintf(text, "Timer del Player: %f", player.timer);
         DrawText(text, xPadding, 100, fontSize, LIGHTGRAY);
     }    
+}
+
+void unloadPlayer(Player *player) {        
+    UnloadTexture(player->textures[0]);
+    UnloadTexture(player->textures[1]);
+    UnloadTexture(player->textures[2]);
+    free(player);
 }

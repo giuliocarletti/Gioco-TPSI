@@ -6,8 +6,10 @@
 typedef struct {
     Button *buttons;
     Label *labels;
+    Box *boxes;
     int nButtons;
     int nLabels;
+    int nBoxes;
 } Panel;
 
 typedef struct {
@@ -17,8 +19,9 @@ typedef struct {
 
 UIManager initUIManager();
 Panel setupMainScreen();
-Panel setupSettingsMenu();
+Panel setupHUD();
 void drawUIManager(UIManager uiManager);
 void updateUIManager(UIManager *uiManager);
+void unloadUIManager(UIManager *uiManager);
 
 #endif

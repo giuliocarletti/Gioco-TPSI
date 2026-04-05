@@ -16,7 +16,8 @@ typedef struct {
 } Player;
 
 Player initiPlayer(double x, double y, int speed, int size);
-void updatePlayer(Player *player);
 void drawPlayer(Player player);
+void updatePlayer(Player *player);
+void unloadPlayer(Player *player);
 
 #endif
