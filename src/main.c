@@ -11,7 +11,6 @@ UIManager uiManager;
 
 void update(bool updateGame);
 void draw(bool drawGame);
-void unload();
 
 int main() {    
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); // rende ridimensionabile la finestra
@@ -19,6 +18,7 @@ int main() {
     SetWindowMinSize(1200, 750); // grandezza minima
     SetTargetFPS(120);
     SetExitKey(0); // toglie tasti per l'uscita
+    ToggleBorderlessWindowed();
     player = initiPlayer(TILE_SIZE*25, TILE_SIZE*25, TILE_SIZE*2, TILE_SIZE); // x, y, velocita, grandezza nello schermo
     terrain = initTerrain(50, 50, TILE_SIZE); // grandezza terreno in tile, grandezza di un tile
     uiManager = initUIManager();
@@ -34,9 +34,11 @@ int main() {
         }
         update(updateGame);
         draw(drawGame);
-    }    
-    CloseWindow();
-    unload();
+    }     
+    CloseWindow();  
+    unloadUIManager(&uiManager); 
+    unloadPlayer(&player);
+    unloadTerrain(&terrain);
     return 0;
 }
 
@@ -57,13 +59,6 @@ void draw(bool drawGame) {
     drawUIManager(uiManager);
     EndDrawing();
 }
-
-void unload() {
-    unloadPlayer(&player);
-    unloadTerrain(&terrain);
-    unloadUIManager(&uiManager);
-}
-
 
 // per fare il make: mingw32-make su windows, make su linux
 // per avviarlo: ./build/raylib-test

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <math.h>
 
-
 Player initiPlayer(double x, double y, int speed, int size) {
     Player player;
     player.world.x = x;
@@ -20,8 +19,8 @@ Player initiPlayer(double x, double y, int speed, int size) {
 }
 
 void updatePlayer(Player *player) {   
-    float dt = GetFrameTime();
-    player->scroll.x += (player->world.x-player->scroll.x)*2*dt; // somma un valore che cresce gradualmente 
+    float dt = GetFrameTime();    
+    player->scroll.x += (player->world.x-player->scroll.x)*2*dt; // somma un valore che cresce gradualmenteS
     player->scroll.y += (player->world.y-player->scroll.y)*2*dt; // per dare un animazione di fluidita'
     player->screen.x = GetScreenWidth()/2+(player->world.x-player->scroll.x); // il player sta al centro dello schermo
     player->screen.y = GetScreenHeight()/2+(player->world.y-player->scroll.y); // ma con piccole variazioni date da scroll
@@ -43,7 +42,7 @@ void updatePlayer(Player *player) {
     }
     if (IsKeyDown(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))  {
         player->state = 2; // azione: salto
-        player->timer = 0.001; // inizio timer
+        player->timer = 0;
     }
     if (IsKeyPressed(KEY_O))  {
         player->showStats = player->showStats? 0:1; // vedere le stats del player
@@ -54,21 +53,22 @@ void updatePlayer(Player *player) {
         double yDirection = inputy/magnitude;
         player->world.x += xDirection*player->speed*dt;
         player->world.y += yDirection*player->speed*dt;
-    }    
-    if(player->timer>0) { // se il timer e' attivo significa che non e' fermo e non sta camminando
-        player->timer += GetFrameTime(); // perche il timer si attiva soltanto nelle azioni con una durata preimpostata
-        if(player->timer>1) player->timer=0; 
-    } else { // se il timer e' a 0, sta camminando o e' fermo
-       player->state = magnitude>0? 1:0; // a seconda di magnitude si capisce se si sta spostando o no
     }
+    if(player->state==2) {
+        player->state = player->timer>1? 0:2;
+    } 
+    if(player->state!=2) {
+        player->state = magnitude>0? 1:0;
+    }    
+    player->timer = player->timer>1? 0:player->timer+dt;
+    
 }
 
 void drawPlayer(Player player) {    
     Texture2D texture = player.textures[player.state]; // prende la texture dello stato attuale (es. se sta fermo sara' 0)
     int length = texture.height; // lunghezza di un lato di uno sprite (se non si capisce basta guardare l'immagine negli asset)
-    double deltaAnimTime = 1/(double)(texture.width/length); // calcolo del tempo 1/iFrameDellAnimazione
-    double deltaTime = GetTime()-floor(GetTime()); // calcolo del'intervallo di tempo tra 0 e 1 secondo
-    int currentFrame = deltaTime/deltaAnimTime; // corrisponde alla divisione dell'intervallo di tempo fratto il tempo necessario per un frame dell'animazione
+    double deltaAnimTime = 1/(double)(texture.width/length); // calcolo del tempo 1/iFrameDellAnimazione    
+    int currentFrame = player.timer/deltaAnimTime; // corrisponde alla divisione dell'intervallo di tempo fratto il tempo necessario per un frame dell'animazione
     int xTexturePos = currentFrame*length; // per ritaglia lo spritesheet si calcola il frame attuale moltiplicato per la lunghezza di uno sprite
     int yTexturePos = 0; // gli spritesheet hanno tutti solo una riga e quindi l'altezza e' sempre zero
     Rectangle src = { // il rettangolo di ritaglio nello spritesheet

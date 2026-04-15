@@ -11,7 +11,7 @@ typedef struct {
     int state; // 0.idle, 1.walk, 2.jumping    
     int direction;
     int showStats;    
-    double timer;
+    double timer;    
     Texture2D textures[3];
 } Player;
 

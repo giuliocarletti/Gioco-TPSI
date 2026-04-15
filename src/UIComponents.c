@@ -4,6 +4,11 @@
 // prinicipalmente questo e' un elenco di componenti da utilizzare nel UIManager
 // in cui ogni componente ha un funzione di inizializzazione, disegno e aggiornamento
 
+static inline Rectangle getScreenSizeRec(Rectangle rec);
+static inline Vector2 getScreenSizeVec(Vector2 vec);
+static inline int getScreenValueX(double val);
+static inline int getScreenValueY(double val);
+
 Label initLabel(char *text, Font font, int fontSize, Color *colors) {
     Label label; 
     label.text = text;
@@ -37,7 +42,7 @@ Box initBox(Rectangle area, Color color) {
 }
 
 void drawLabel(Label label) {    
-    int spacing = label.screenFontSize/10; // la distanza tra le lettere e' un decimo del font nello schermo
+    int spacing = label.screenFontSize/24; // la distanza tra le lettere e' un decimo del font nello schermo
     Vector2 textInfo = MeasureTextEx(label.font, label.text, label.screenFontSize, spacing); // misura altezza e larghezza del testo
     Vector2 origin = { // mi serve per prendere il centro del testo come punto di origine
         textInfo.x/2, 
@@ -85,7 +90,6 @@ bool updateButton(Button *button, Vector2 mousePosition) {
         if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) { 
             button->state = 2; // in caso di click del tasto sinistro, lo stato passa a 2 (click)
             button->label.state = 2; // stessa cosa per il testo 
-            printf("Clicked\n");
             return true; // true nel caso in cui il bottone e' stato premuto
         }        
     }
@@ -96,7 +100,7 @@ void updateBox(Box *box) {
     box->screenArea = getScreenSizeRec(box->sectionArea); // unica modifica del rettangolo, per ora
 }
 
-Rectangle getScreenSizeRec(Rectangle rec) { 
+static inline Rectangle getScreenSizeRec(Rectangle rec) { 
     return (Rectangle) {
         getScreenValueX(rec.x),
         getScreenValueY(rec.y),
@@ -105,17 +109,17 @@ Rectangle getScreenSizeRec(Rectangle rec) {
     };
 }
 
-Vector2 getScreenSizeVec(Vector2 vec) {
+static inline Vector2 getScreenSizeVec(Vector2 vec) {
     return (Vector2) {
         getScreenValueX(vec.x),
         getScreenValueY(vec.y)
     };
 }
 
-int getScreenValueX(double val) {    
+static inline int getScreenValueX(double val) {    
     return val/100*GetScreenWidth(); // trasforma da percentuale a un valore basato sulla larghezza dello schermo
 }
 
-int getScreenValueY(double val) {
+static inline int getScreenValueY(double val) {
     return val/100*GetScreenHeight(); // trasforma da percentuale a un valore basato sull'altezza dello schermo
 }

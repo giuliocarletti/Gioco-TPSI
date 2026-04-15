@@ -39,9 +39,4 @@ void updateLabel(Label *label);
 bool updateButton(Button *button, Vector2 mousePosition);
 void updateBox(Box *box);
 
-Rectangle getScreenSizeRec(Rectangle rec);
-Vector2 getScreenSizeVec(Vector2 vec);
-int getScreenValueX(double val);
-int getScreenValueY(double val);
-
 #endif
