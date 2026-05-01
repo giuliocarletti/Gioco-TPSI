@@ -4,13 +4,17 @@
 #include <string.h>
 
 Terrain initTerrain() {
-    Terrain terrain;    
+    Terrain terrain;
     terrain.xDimension = TERRAIN_WIDTH; // larghezza mappa
     terrain.yDimension = TERRAIN_HEIGHT; // altezza mappa
     terrain.tileSize = TILE_SIZE; // grandezza tile
     terrain.tileMap = (int *)malloc(sizeof(int)*terrain.xDimension*terrain.yDimension); // inizializzazione dell'array
     terrain.tilesTexture = LoadTexture(TERRAIN_TILES_PATH); // caricamento delle texture tile
     FILE *file = fopen(TERRAIN_MAP_PATH, "r"); // apertura del file csv
+    if(file == NULL) {
+        TraceLog(LOG_ERROR, "Impossibile aprire la mappa: %s", TERRAIN_MAP_PATH);
+        return terrain;
+    }
     for(int row=0; row<terrain.yDimension; row++) { 
         char line[4096]; // buffer
         fgets(line, 4096, file); // prende una riga
@@ -65,5 +69,6 @@ void renderTerrain(Terrain terrain, Player player) {
 
 void unloadTerrain(Terrain *terrain) {
     UnloadTexture(terrain->tilesTexture);
-    free(terrain);
+    free(terrain->tileMap); // libera l'array allocato con malloc in initTerrain
+    terrain->tileMap = NULL;
 }

@@ -1,10 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "raylib.h"
 #include "config.h"
 #include "player.h"
 #include "terrain.h"
-#include "raylib.h"
+#include "spawner.h"
 #include "UI.h"
 
 typedef enum {
@@ -18,6 +19,7 @@ typedef struct {
     Player player;
     Terrain terrain;
     PlayState state;
+    Spawner spawner;
     UI ui;
     int screenHeight;
     int screenWidth;

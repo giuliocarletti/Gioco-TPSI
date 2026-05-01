@@ -8,13 +8,14 @@ typedef struct {
     Vector2 world;
     Vector2 screen;
     Vector2 scroll;
+    int health;
     int speed;
     int size;
-    int state; // 0.idle, 1.walk, 2.jumping
+    int state; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack
     int direction;
     bool showStats;
     double timer;
-    Texture2D textures[3];    
+    Texture2D textures[5]; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack (da aggiungere)   
 } Player;
 
 Player initPlayer();

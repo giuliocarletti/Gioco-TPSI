@@ -4,7 +4,7 @@
 #include <math.h>
 
 Player initPlayer() {
-    Player player;        
+    Player player;
     player.world.x = 25*TILE_SIZE;
     player.world.y = 25*TILE_SIZE;
     player.scroll = player.world;
@@ -12,9 +12,12 @@ Player initPlayer() {
     player.size = TILE_SIZE;
     player.textures[0] = LoadTexture(PLAYER_IDLE_PATH);
     player.textures[1] = LoadTexture(PLAYER_WALK_PATH);
-    player.textures[2] = LoadTexture(PLAYER_JUMP_PATH);
-    player.state = 0; // lo stato sta per l'azione del player (fermo, cammina, ecc.)
-    player.timer = 0;    
+    player.textures[2] = LoadTexture(PLAYER_HURT_PATH);
+    player.textures[3] = LoadTexture(PLAYER_DEATH_PATH);
+    player.textures[4] = LoadTexture(PLAYER_ATTACK_PATH);
+    player.state = 0; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack
+    player.timer = 0;
+    player.health = 100;
     return player;
 }
 
@@ -40,26 +43,20 @@ void updatePlayer(Player *player) {
     if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))  {
         inputy = 1;
     }
-    if (IsKeyDown(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))  {
-        player->state = 2; // azione: salto
-        player->timer = 0;
+    if (IsKeyDown(KEY_SPACE))  {
+        player->state = 4;
     }
     if (IsKeyPressed(KEY_O))  {
         player->showStats = !player->showStats; // vedere le stats del player
     }
-    double magnitude = sqrt(inputx*inputx+inputy*inputy); // risoluzione al movimento diagonale
+    double magnitude = sqrt(inputx*inputx+inputy*inputy);
     if(magnitude>0) {
         double xDirection = inputx/magnitude;
         double yDirection = inputy/magnitude;
         player->world.x += xDirection*player->speed*dt;
         player->world.y += yDirection*player->speed*dt;
     }
-    if(player->state==2) {
-        player->state = player->timer>1? 0:2;
-    } 
-    if(player->state!=2) {
-        player->state = magnitude>0? 1:0;
-    }    
+    player->state = magnitude>0? 1:0; // 1.walk se si muove, 0.idle altrimenti
     player->timer = player->timer>1? 0:player->timer+dt;
     
 }
@@ -107,5 +104,6 @@ void unloadPlayer(Player *player) {
     UnloadTexture(player->textures[0]);
     UnloadTexture(player->textures[1]);
     UnloadTexture(player->textures[2]);
-    free(player);
+    UnloadTexture(player->textures[3]);
+    UnloadTexture(player->textures[4]);    
 }

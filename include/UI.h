@@ -7,8 +7,7 @@
 
 typedef struct {
     Panel mainScreen;
-    Panel settingsScreen;
-    
+    Panel settingsScreen;    
     Vector2 screenSize;
 
     struct {

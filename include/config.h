@@ -12,15 +12,43 @@
 #define FONT_SEMIBOLD_PATH "assets/fonts/PixelifySans-SemiBold.ttf"
 #define FONT_BOLD_PATH "assets/fonts/PixelifySans-Bold.ttf"
 
-#define PLAYER_IDLE_PATH "assets/player/ASEPRITE FILE-IDLE.png"
-#define PLAYER_WALK_PATH "assets/player/ASEPRITE FILE-WALK.png"
-#define PLAYER_JUMP_PATH "assets/player/ASEPRITE FILE-JUMP.png"
+#define PLAYER_IDLE_PATH "assets/sprites/lucaIdle.png"
+#define PLAYER_WALK_PATH "assets/sprites/lucaWalk.png"
+#define PLAYER_HURT_PATH "assets/sprites/lucaHurt.png"
+#define PLAYER_DEATH_PATH "assets/sprites/lucaDeath.png"
+#define PLAYER_ATTACK_PATH "assets/sprites/lucaAttack.png"
+
+#define CARLI_IDLE_PATH "assets/sprites/carliIdle.png" 
+#define CARLI_WALK_PATH "assets/sprites/carliWalk.png"
+#define CARLI_HURT_PATH "assets/sprites/carliHurt.png"
+#define CARLI_DEATH_PATH "assets/sprites/carliDeath.png"
+
+#define ARI_IDLE_PATH "assets/sprites/ariIdle.png"
+#define ARI_WALK_PATH "assets/sprites/ariWalk.png"
+#define ARI_HURT_PATH "assets/sprites/ariHurt.png"
+#define ARI_DEATH_PATH "assets/sprites/ariDeath.png"
+
+#define GIULIO_IDLE_PATH "assets/sprites/giulioIdle.png"
+#define GIULIO_WALK_PATH "assets/sprites/giulioWalk.png"
+#define GIULIO_HURT_PATH "assets/sprites/giulioHurt.png"
+#define GIULIO_DEATH_PATH "assets/sprites/giulioDeath.png"
 
 #define TERRAIN_TILES_PATH "assets/tiles/floor_tiles.png"
 #define TERRAIN_MAP_PATH "assets/maps/map.csv"
 
-#define COLOR_PRIMARY (Color){34, 40, 49, 255}
-#define COLOR_SECONDARY (Color){57, 62, 70, 255}
-#define COLOR_TERTIARY (Color){223, 208, 184, 255}
+#define BLOCKED_TILES_COUNT 15
+static const int BLOCKED_TILES[BLOCKED_TILES_COUNT] = {
+    24, 25, 26, 28, 29,
+    30, 33, 34, 35, 36,
+    39, 42, 43, 44, 45
+};
+ 
+// --- HITBOX ---
+#define HITBOX_RATIO 0.6f  // hitbox = 60% dello sprite
+ 
+// --- COLORI UI ---
+#define COLOR_PRIMARY   (Color){34,  40,  49,  255}
+#define COLOR_SECONDARY (Color){57,  62,  70,  255}
+#define COLOR_TERTIARY  (Color){223, 208, 184, 255}
 
 #endif

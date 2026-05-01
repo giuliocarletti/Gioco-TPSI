@@ -4,7 +4,6 @@
 #include "raylib.h"
 
 typedef enum {
-    PANEL,
     LABEL,
     BUTTON,
 } ComponentType;
@@ -16,7 +15,7 @@ typedef struct {
 
 typedef struct { 
     Rectangle area;
-    double origin;
+    Vector2 origin;
     Color color;
     struct {
         Component *array;
@@ -30,16 +29,17 @@ typedef struct {
     Font font;
     Color color;
     Vector2 position;
-    double origin;
+    Vector2 origin;
 } Label;
 
 typedef struct {
+    bool hover;
     char* text;
     float size;
     Font font;    
     Color colors[2];
     Rectangle area;
-    double origin;
+    Vector2 origin;
 } Button;
 
 Panel initPanel(Rectangle area, Color color);
