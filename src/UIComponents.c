@@ -4,6 +4,7 @@
 
 static Rectangle getScreenSizeRec(Vector2 screenSize, Rectangle rec);
 static Vector2 getScreenSizeVec(Vector2 screenSize, Vector2 vec);
+static void drawRec(Rectangle area, double origin, Color color);
 
 Panel initPanel(Rectangle area, Color color) {
     Panel panel;
@@ -50,9 +51,11 @@ void insertComponent(Panel *container, Component component) {
     container->components.array[container->components.length-1] = component;
 }
 
-void renderPanel(Panel panel, Vector2 screenSize) {
+void renderPanel(Panel panel, Vector2 screenSize) {    
+    //Rectangle screenRec = getScreenSizeRec(screenSize, panel.area);
+    //double origin = panel.origin*
+    //DrawRectanglePro()
     
-    DrawRectangleRec(area, panel.color);
     
     /*
     switch(component.type) {
@@ -81,4 +84,20 @@ void renderPanel(Panel panel, Vector2 screenSize) {
             break;
     }    
     */    
+}
+
+static Rectangle getScreenSizeRec(Vector2 screenSize, Rectangle rec) {
+    return (Rectangle) {
+        rec.x/100*screenSize.x,
+        rec.y/100*screenSize.y,
+        rec.width/100*screenSize.x,
+        rec.height/100*screenSize.y,
+    };
+}
+
+static Vector2 getScreenSizeVec(Vector2 screenSize, Vector2 vec) {
+    return (Vector2) {
+        vec.x/100*screenSize.x,
+        vec.y/100*screenSize.y
+    };
 }

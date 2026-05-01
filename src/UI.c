@@ -42,7 +42,7 @@ UI initUI() {
 }
 
 void renderUI(UI ui) {       
-    renderComponent(ui.mainScreen, ui.screenSize);
+    renderPanel(ui.mainScreen, ui.screenSize);
     
 }
 

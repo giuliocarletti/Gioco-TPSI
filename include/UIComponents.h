@@ -47,6 +47,6 @@ Label* initLabel(Vector2 pos, char *text, Font font);
 Button* initButton(Rectangle area, char *text, Font font);
 Component toComponent(void *element, ComponentType type);
 void insertComponent(Panel *container, Component component);
-void renderPanel(Panel panel);
+void renderPanel(Panel panel, Vector2 screenSize);
 
 #endif
