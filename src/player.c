@@ -3,23 +3,23 @@
 #include <stdio.h>
 #include <math.h>
 
-Player initiPlayer(double x, double y, int speed, int size) {
-    Player player;
-    player.world.x = x;
-    player.world.y = y;
-    player.scroll.x = x;
-    player.scroll.y = y;
-    player.speed = speed;
-    player.size = size;
-    player.textures[0] = LoadTexture("assets/player/ASEPRITE FILE-IDLE.png");
-    player.textures[1] = LoadTexture("assets/player/ASEPRITE FILE-WALK.png");
-    player.textures[2] = LoadTexture("assets/player/ASEPRITE FILE-JUMP.png");
+Player initPlayer() {
+    Player player;        
+    player.world.x = 25*TILE_SIZE;
+    player.world.y = 25*TILE_SIZE;
+    player.scroll = player.world;
+    player.speed = 2*TILE_SIZE;
+    player.size = TILE_SIZE;
+    player.textures[0] = LoadTexture(PLAYER_IDLE_PATH);
+    player.textures[1] = LoadTexture(PLAYER_WALK_PATH);
+    player.textures[2] = LoadTexture(PLAYER_JUMP_PATH);
     player.state = 0; // lo stato sta per l'azione del player (fermo, cammina, ecc.)
+    player.timer = 0;    
     return player;
 }
 
 void updatePlayer(Player *player) {   
-    float dt = GetFrameTime();    
+    float dt = GetFrameTime();
     player->scroll.x += (player->world.x-player->scroll.x)*2*dt; // somma un valore che cresce gradualmenteS
     player->scroll.y += (player->world.y-player->scroll.y)*2*dt; // per dare un animazione di fluidita'
     player->screen.x = GetScreenWidth()/2+(player->world.x-player->scroll.x); // il player sta al centro dello schermo
@@ -45,7 +45,7 @@ void updatePlayer(Player *player) {
         player->timer = 0;
     }
     if (IsKeyPressed(KEY_O))  {
-        player->showStats = player->showStats? 0:1; // vedere le stats del player
+        player->showStats = !player->showStats; // vedere le stats del player
     }
     double magnitude = sqrt(inputx*inputx+inputy*inputy); // risoluzione al movimento diagonale
     if(magnitude>0) {
@@ -64,7 +64,7 @@ void updatePlayer(Player *player) {
     
 }
 
-void drawPlayer(Player player) {    
+void renderPlayer(Player player) {    
     Texture2D texture = player.textures[player.state]; // prende la texture dello stato attuale (es. se sta fermo sara' 0)
     int length = texture.height; // lunghezza di un lato di uno sprite (se non si capisce basta guardare l'immagine negli asset)
     double deltaAnimTime = 1/(double)(texture.width/length); // calcolo del tempo 1/iFrameDellAnimazione    
