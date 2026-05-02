@@ -52,10 +52,13 @@ void updateEnemy(Enemy *enemy, Player player) {
     // distanza dal player (coordinate mondo)
     float dx = player.world.x - enemy->world.x;
     float dy = player.world.y - enemy->world.y;
+
     float distance = sqrt(dx*dx + dy*dy);
     float aggroRange = 5*TILE_SIZE;
+
     int inputx = 0;
     int inputy = 0;
+    
     if(distance < aggroRange) {
         // INSEGUIMENTO: si muove verso il player
         enemy->speed = 2*TILE_SIZE;
@@ -119,7 +122,7 @@ void renderEnemy(Enemy enemy) {
         enemy.size/2,
         enemy.size/2
     };
-    
+
     DrawTexturePro(texture, src, dst, pivot, 0, WHITE);
 
     if(enemy.showHitbox) {
