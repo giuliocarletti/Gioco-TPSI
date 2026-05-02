@@ -15,10 +15,9 @@ typedef struct {
     int direction;
     bool showStats;
     float timer;
-    float attackTimer;   
-    Texture2D textures[5]; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack (da aggiungere)   
+    float attackTimer; // durata animazione attacco
+    Texture2D textures[5]; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack
     Vector2 screenSize;    
-    int prevState;
 } Player;
 
 Player initPlayer();

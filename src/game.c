@@ -2,45 +2,56 @@
  
 Game initGame() {
     Game game;
-    game.state = STATE_PLAYING;
-    game.player = initPlayer();
+    game.state   = STATE_PLAYING;
+    game.player  = initPlayer();
     game.terrain = initTerrain();
-    game.spawner = initSpawner(20, game.player.world);
-    game.ui = initUI();
+    game.ui      = initUI();
+    game.entities = initEntitiesManager(20, &game.player, game.player.world);
     return game;
 }
  
 void updateGame(Game *game) {
     game->screenHeight = GetScreenHeight();
-    game->screenWidth = GetScreenWidth();
-    game->ui.screenSize.x = game->screenWidth;
-    game->ui.screenSize.y = game->screenHeight;
+    game->screenWidth  = GetScreenWidth();
+    game->ui.screenSize.x     = game->screenWidth;
+    game->ui.screenSize.y     = game->screenHeight;
     game->player.screenSize.x = game->screenWidth;
     game->player.screenSize.y = game->screenHeight;
-    if(game->state == STATE_PLAYING) {
+ 
+    if (game->state == STATE_PLAYING) {
         updatePlayer(&game->player);
-        updateEnemies(&game->spawner, game->player);
+        updateEntitiesManager(&game->entities, &game->player);
     }
-    if(IsKeyPressed(KEY_F1)) {
+ 
+    if (IsKeyPressed(KEY_F1)) {
         ToggleBorderlessWindowed();
     }
 }
  
-void renderGame(Game game) {
+/*void renderGame(Game game) {
     BeginDrawing();
     ClearBackground(BLACK);
-    if(game.state == STATE_PLAYING) {
+    if (game.state == STATE_PLAYING) {
         renderTerrain(game.terrain, game.player);
-        renderEnemies(game.spawner);
-        renderPlayer(game.player);
+        renderEntitiesManager(&game.entities);
     }
-    //renderUI(game.ui); // da attivare quando la UI è pronta
+    //renderUI(game.ui); // da attivare quando la UI e' pronta
+    EndDrawing();
+}*/
+ 
+void renderGame(Game *game) {
+    BeginDrawing();
+    ClearBackground(BLACK);
+    if (game->state == STATE_PLAYING) {
+        renderTerrain(game->terrain, game->player);
+        renderEntitiesManager(&game->entities);
+    }
+    //renderUI(game->ui);
     EndDrawing();
 }
- 
 void closeGame(Game *game) {
     unloadPlayer(&game->player);
     unloadTerrain(&game->terrain);
-    unloadSpawner(&game->spawner);
+    unloadEntitiesManager(&game->entities);
     unloadUI(&game->ui);
 }
