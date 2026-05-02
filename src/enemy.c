@@ -4,8 +4,8 @@
  
 Enemy initEnemy(EnemyType type, Vector2 spawn) {
     Enemy enemy;
-    enemy.speed = 1.5*TILE_SIZE;
-    enemy.size = TILE_SIZE;
+    enemy.speed = 2.5*TILE_SIZE;
+    enemy.size = 1.5*TILE_SIZE;
     enemy.world = spawn;
     enemy.timer = 0;
     enemy.timerMovement = 0;
@@ -46,20 +46,21 @@ void updateEnemy(Enemy *enemy, Player player) {
     float dx = player.world.x - enemy->world.x;
     float dy = player.world.y - enemy->world.y;
     float distance = sqrt(dx*dx + dy*dy);
-    float aggroRange = 8 * TILE_SIZE;
+    float aggroRange = 5*TILE_SIZE;
  
     int inputx = 0;
     int inputy = 0;
  
     if(distance < aggroRange) {
         // INSEGUIMENTO: si muove verso il player
+        enemy->speed = 2*TILE_SIZE;
         inputx = (dx > 0) ? 1 : -1;
-        inputy = (dy > 0) ? 1 : -1;
-        // se quasi allineato su un asse, azzera l'altro
+        inputy = (dy > 0) ? 1 : -1;        
         if(fabs(dx) < TILE_SIZE/2) inputx = 0;
         if(fabs(dy) < TILE_SIZE/2) inputy = 0;
     } else {
         // MOVIMENTO RANDOM: cambia direzione ogni 1-3 secondi
+        enemy->speed = 1*TILE_SIZE;
         enemy->timerMovement -= dt;
         if(enemy->timerMovement <= 0) {
             enemy->randomDirX = GetRandomValue(-1, 1);

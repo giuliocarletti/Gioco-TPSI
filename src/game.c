@@ -15,6 +15,8 @@ void updateGame(Game *game) {
     game->screenWidth = GetScreenWidth();
     game->ui.screenSize.x = game->screenWidth;
     game->ui.screenSize.y = game->screenHeight;
+    game->player.screenSize.x = game->screenWidth;
+    game->player.screenSize.y = game->screenHeight;
     if(game->state == STATE_PLAYING) {
         updatePlayer(&game->player);
         updateEnemies(&game->spawner, game->player);

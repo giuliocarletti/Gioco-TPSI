@@ -10,9 +10,10 @@ Terrain initTerrain() {
     terrain.tileSize = TILE_SIZE; // grandezza tile
     terrain.tileMap = (int *)malloc(sizeof(int)*terrain.xDimension*terrain.yDimension); // inizializzazione dell'array
     terrain.tilesTexture = LoadTexture(TERRAIN_TILES_PATH); // caricamento delle texture tile
+    SetTextureFilter(terrain.tilesTexture, TEXTURE_FILTER_POINT);
     FILE *file = fopen(TERRAIN_MAP_PATH, "r"); // apertura del file csv
     if(file == NULL) {
-        TraceLog(LOG_ERROR, "Impossibile aprire la mappa: %s", TERRAIN_MAP_PATH);
+        printf("\nErrore apertura mappa: %s\n", TERRAIN_MAP_PATH);
         return terrain;
     }
     for(int row=0; row<terrain.yDimension; row++) { 
@@ -22,14 +23,16 @@ Terrain initTerrain() {
             int index = row*terrain.xDimension+col; // indice
             char *info = strtok(col==0? line:NULL, ","); // la riga viene suddivisa 
             terrain.tileMap[index] = atoi(info); // il dato viene trasformato in int
-        }         
+            printf(" %i ", terrain.tileMap[index]);
+        }
+        printf("\n");
     }
     fclose(file);
     return terrain; // restituisci il terreno
 }
 
 void renderTerrain(Terrain terrain, Player player) {
-    int resolution = 32; // la risoluzione delle texture dei tile (per ora 32x32)
+    int resolution = TILE; // la risoluzione di un tile
     Texture texture = terrain.tilesTexture; 
     int textureCols = texture.width/resolution; // il numero di colonne della texture
     for(int row=0; row<terrain.yDimension; row++) {
@@ -45,7 +48,7 @@ void renderTerrain(Terrain terrain, Player player) {
             Vector2 screen = {
                 world.x-player.world.x+player.screen.x, 
                 world.y-player.world.y+player.screen.y, 
-            }; // la posizione nello schermo
+            }; // la posizione nello schermo               
             Rectangle src = {
                 xTexturePos*resolution, 
                 yTexturePos*resolution, 
@@ -53,7 +56,7 @@ void renderTerrain(Terrain terrain, Player player) {
                 resolution
             }; // il ritaglio dell'immagine per prendere un solo tile
             Rectangle dst = {
-                (int)screen.x, // cast a int per togliere spaziature inutili
+                (int)screen.x, // cast a int per togliere spazi inutili
                 (int)screen.y,
                 terrain.tileSize,
                 terrain.tileSize
