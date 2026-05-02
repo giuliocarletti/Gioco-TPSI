@@ -14,6 +14,10 @@ Enemy initEnemy(EnemyType type, Vector2 spawn) {
     enemy.randomDirX = 0;
     enemy.randomDirY = 0;
     enemy.type = type;
+
+    enemy.health = 1; //COLPI PER MORIRE
+    enemy.isAlive = true;
+   
     switch(type) {
         case CARLI:
             enemy.textures[0] = LoadTexture(CARLI_IDLE_PATH);
@@ -69,6 +73,7 @@ void updateEnemy(Enemy *enemy, Player player) {
         }
         inputx = enemy->randomDirX;
         inputy = enemy->randomDirY;
+
     }
  
     if(inputx != 0) enemy->direction = (inputx > 0) ? 1 : -1;

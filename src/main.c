@@ -24,4 +24,4 @@ int main() {
 }
 
 // per fare il make: mingw32-make su windows, make su linux
-// per avviarlo: ./build/raylib-test
+// per avviarlo: ./build/raylib-test Gioco-TPSI/build/raylib-test
