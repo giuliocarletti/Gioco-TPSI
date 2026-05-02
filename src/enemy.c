@@ -19,7 +19,8 @@ Enemy initEnemy(EnemyType type, Vector2 spawn) {
     enemy.hitbox.y = 0.5;
     enemy.hitbox.width = 0.4;
     enemy.hitbox.height = 0.4;
-
+    enemy.isAlive = true;
+   
     switch(type) {
         case CARLI:
             enemy.textures[0] = LoadTexture(CARLI_IDLE_PATH);
@@ -73,6 +74,7 @@ void updateEnemy(Enemy *enemy, Player player) {
         }
         inputx = enemy->randomDirX;
         inputy = enemy->randomDirY;
+
     }
     if(inputx != 0) enemy->direction = (inputx > 0) ? 1 : -1;
     double magnitude = sqrt(inputx*inputx+inputy*inputy);
@@ -91,12 +93,16 @@ void updateEnemy(Enemy *enemy, Player player) {
 }
  
 void renderEnemy(Enemy enemy) {
+
     Texture2D texture = enemy.textures[enemy.state];
     int length = texture.height;
+
     double deltaAnimTime = 1/(double)(texture.width/length);
     int currentFrame = enemy.timer/deltaAnimTime;
+
     int xTexturePos = currentFrame*length;
     int yTexturePos = 0;
+
     Rectangle src = {
         xTexturePos, 
         yTexturePos, 
@@ -113,6 +119,7 @@ void renderEnemy(Enemy enemy) {
         enemy.size/2,
         enemy.size/2
     };
+    
     DrawTexturePro(texture, src, dst, pivot, 0, WHITE);
 
     if(enemy.showHitbox) {

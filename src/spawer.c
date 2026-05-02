@@ -43,7 +43,11 @@ Spawner initSpawner(int nEnemy, Vector2 playerWorld) {
 void updateEnemies(Spawner *spawner, Player player) {
     for(int i = 0; i < spawner->enemies.length; i++) {
         updateEnemy(&spawner->enemies.array[i], player);
-    }
+
+        /*if(player.state == 4) {
+            damageEnemy(&spawner->enemies.array[i], player.attackBox); // idea per colpire i nemici con l'attacco del player da implementare 
+        }*/
+    } // <-- mancava questa
 }
  
 void renderEnemies(Spawner spawner) {

@@ -16,6 +16,7 @@ typedef struct {
     Vector2 world;
     Vector2 screen;
     int health;
+    bool isAlive;
     int speed;
     int size;
     int state;      // 0.idle, 1.walk, 2.hurt, 3.death

@@ -32,15 +32,20 @@ Terrain initTerrain() {
 }
 
 void renderTerrain(Terrain terrain, Player player) {
+
     int resolution = TILE; // la risoluzione di un tile
     Texture texture = terrain.tilesTexture; 
     int textureCols = texture.width/resolution; // il numero di colonne della texture
+
     for(int row=0; row<terrain.yDimension; row++) {
         for(int col=0; col<terrain.xDimension; col++) {
+
             int index = row*terrain.xDimension+col; // siccome e' un' array a una dimensione devo calcolare l'inidice
             int currentTileNum = terrain.tileMap[index]; // il tile da piazzare 
+
             int xTexturePos = currentTileNum%textureCols; // il resto e' la posizione orizzontale nell'immagine
             int yTexturePos = currentTileNum/textureCols; // il risultato e' la posizione verticale nell'immagine
+            
             Vector2 world = { 
                 col*terrain.tileSize, 
                 row*terrain.tileSize
@@ -65,6 +70,7 @@ void renderTerrain(Terrain terrain, Player player) {
                 terrain.tileSize/2,
                 terrain.tileSize/2
             }; // origine, la parte centrale del tile
+            
             DrawTexturePro(texture, src, dst, origin, 0, WHITE);
         }
     }
