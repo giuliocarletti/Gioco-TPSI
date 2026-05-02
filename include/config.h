@@ -36,17 +36,6 @@
 #define TERRAIN_TILES_PATH "assets/tiles/floor_tiles.png"
 #define TERRAIN_MAP_PATH "assets/maps/map.csv"
 
-#define BLOCKED_TILES_COUNT 15
-static const int BLOCKED_TILES[BLOCKED_TILES_COUNT] = {
-    24, 25, 26, 28, 29,
-    30, 33, 34, 35, 36,
-    39, 42, 43, 44, 45
-};
- 
-// --- HITBOX ---
-#define HITBOX_RATIO 0.6f  // hitbox = 60% dello sprite
- 
-// --- COLORI UI ---
 #define COLOR_PRIMARY   (Color){34,  40,  49,  255}
 #define COLOR_SECONDARY (Color){57,  62,  70,  255}
 #define COLOR_TERTIARY  (Color){223, 208, 184, 255}

@@ -56,6 +56,7 @@ void updatePlayer(Player *player) {
         player->world.x += xDirection*player->speed*dt;
         player->world.y += yDirection*player->speed*dt;
     }
+    //if(player->state==0||player->state==)
     player->state = magnitude>0? 1:0; // 1.walk se si muove, 0.idle altrimenti
     player->timer = player->timer>1? 0:player->timer+dt;
     
@@ -105,5 +106,5 @@ void unloadPlayer(Player *player) {
     UnloadTexture(player->textures[1]);
     UnloadTexture(player->textures[2]);
     UnloadTexture(player->textures[3]);
-    UnloadTexture(player->textures[4]);    
+    UnloadTexture(player->textures[4]);
 }

@@ -3,7 +3,6 @@
 #include "stdlib.h"
 #include "math.h"
  
-// Spawn random nella mappa, almeno 5 tile di distanza dal player
 static Vector2 RandomSpawnPosition(Vector2 playerWorld) {
     float minDistance = 5 * TILE_SIZE;
     Vector2 position;

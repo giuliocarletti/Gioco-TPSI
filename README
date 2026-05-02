@@ -1,0 +1,47 @@
+INCREDIBILE RELAZIONE
+By Carletti Giulio and Demurtas Arianna
+
+Il nostro progetto è un videogioco 2D scritto in C usando la libreria raylib. 
+Il giocatore si muove su una mappa e viene inseguito da nemici. 
+Il gioco non è ancora finito, ma le parti principali funzionano già.
+Il codice è diviso in più file, ognuno con il suo compito. 
+Le immagini, i font e la mappa del gioco stanno nella cartella assets/, 
+mentre i file con il codice vero e proprio stanno in src/. 
+Tutti i valori fissi del gioco, come quanto è grande ogni tile o quante righe ha la mappa, 
+sono scritti in un unico file chiamato config.h, 
+così se si vuole cambiare qualcosa basta modificarlo lì.
+Quando si avvia il programma, per prima cosa si apre la finestra di gioco e 
+si imposta a 120 il numero massimo di fotogrammi al secondo. 
+Poi parte un ciclo che non si ferma mai finché non si chiude il gioco: 
+ad ogni giro del ciclo il programma aggiorna la posizione di tutti gli oggetti e 
+poi li disegna sullo schermo. 
+Il giocatore si muove con WASD o le frecce direzionali. 
+Per evitare che vada più veloce in diagonale rispetto alle direzioni normali, 
+la velocità viene corretta matematicamente ogni volta che si premono due tasti insieme. 
+La telecamera segue il personaggio in modo morbido: invece di spostarsi di colpo, 
+si avvicina poco a poco alla posizione del giocatore, dando l'effetto di uno scorrimento fluido. 
+Il personaggio ha diverse animazioni a seconda di cosa sta facendo: 
+se è fermo, se cammina, se viene colpito e così via. 
+Ogni animazione è fatta con una singola immagine che contiene tutti i fotogrammi 
+uno accanto all'altro, come una striscia di diapositive. 
+Il programma decide quale fotogramma mostrare in base al tempo, 
+e quando il giocatore guarda a sinistra l'immagine viene semplicemente specchiata.
+I nemici sono tre tipi diversi, ognuno con le sue animazioni. 
+Il loro comportamento è semplice: se un nemico è abbastanza vicino al giocatore lo insegue, 
+altrimenti gira a caso per la mappa cambiando direzione ogni tanto. 
+All'inizio del gioco vengono creati 20 nemici in punti casuali della mappa, 
+ma sempre abbastanza lontano dal giocatore così non gli appaiono subito addosso.
+La mappa del gioco è salvata in un file CSV, 
+che è praticamente un file di testo con tanti numeri separati da virgole. 
+Ogni numero indica che tipo di tile mettere in quel punto della mappa. 
+Il programma legge questo file all'avvio e costruisce la mappa in memoria. 
+Per disegnare ogni tile sullo schermo, il programma prende un'unica immagine 
+grande che contiene tutti i tile possibili e ritaglia solo il pezzo che serve.
+L'interfaccia grafica, cioè i menu e i pulsanti, è già impostata nel codice 
+ma non è ancora attiva durante il gioco. 
+È stata progettata in modo che funzioni bene su qualsiasi dimensione di schermo, 
+usando le percentuali invece dei pixel fissi per posizionare gli elementi, 
+così un pulsante che sta al centro rimane al centro anche se si ridimensiona la finestra.
+Le cose che mancano ancora sono principalmente tre: 
+il combattimento (si può premere spazio per attaccare ma non succede nulla ai nemici) 
+e i menu di gioco e pausa, che esistono nel codice ma non sono ancora collegati al resto.
