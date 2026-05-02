@@ -4,7 +4,7 @@
 #include "raylib.h"
 
 #define TILE 16
-#define TILE_SIZE 9*16
+#define TILE_SIZE 8*16
 #define TERRAIN_HEIGHT 80
 #define TERRAIN_WIDTH 80
 

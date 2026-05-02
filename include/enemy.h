@@ -25,6 +25,8 @@ typedef struct {
     int randomDirX;       // direzione random corrente X
     int randomDirY;       // direzione random corrente Y
     Texture2D textures[4]; // 0.idle, 1.walk, 2.hurt, 3.death
+    Rectangle hitbox;
+    bool showHitbox;
 } Enemy;
  
 Enemy initEnemy(EnemyType type, Vector2 spawn);

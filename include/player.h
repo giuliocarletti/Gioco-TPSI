@@ -17,7 +17,7 @@ typedef struct {
     float timer;    
     Texture2D textures[5]; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack (da aggiungere)   
     Rectangle hitbox;
-    Vector2 screenSize;    
+    Vector2 screenSize;
 } Player;
 
 Player initPlayer();

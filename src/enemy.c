@@ -14,6 +14,12 @@ Enemy initEnemy(EnemyType type, Vector2 spawn) {
     enemy.randomDirX = 0;
     enemy.randomDirY = 0;
     enemy.type = type;
+    enemy.health = 100;
+    enemy.hitbox.x = 0.3; // posizione all'interno dello sprite (in %)
+    enemy.hitbox.y = 0.5;
+    enemy.hitbox.width = 0.4;
+    enemy.hitbox.height = 0.4;
+
     switch(type) {
         case CARLI:
             enemy.textures[0] = LoadTexture(CARLI_IDLE_PATH);
@@ -47,10 +53,8 @@ void updateEnemy(Enemy *enemy, Player player) {
     float dy = player.world.y - enemy->world.y;
     float distance = sqrt(dx*dx + dy*dy);
     float aggroRange = 5*TILE_SIZE;
- 
     int inputx = 0;
     int inputy = 0;
- 
     if(distance < aggroRange) {
         // INSEGUIMENTO: si muove verso il player
         enemy->speed = 2*TILE_SIZE;
@@ -70,24 +74,20 @@ void updateEnemy(Enemy *enemy, Player player) {
         inputx = enemy->randomDirX;
         inputy = enemy->randomDirY;
     }
- 
     if(inputx != 0) enemy->direction = (inputx > 0) ? 1 : -1;
- 
-    double magnitude = sqrt(inputx*inputx + inputy*inputy);
+    double magnitude = sqrt(inputx*inputx+inputy*inputy);
     if(magnitude > 0) {
         double xDirection = inputx / magnitude;
         double yDirection = inputy / magnitude;
-        enemy->world.x += xDirection * enemy->speed * dt;
-        enemy->world.y += yDirection * enemy->speed * dt;
+        enemy->world.x += xDirection*enemy->speed*dt;
+        enemy->world.y += yDirection*enemy->speed*dt;
     }
- 
     enemy->state = magnitude > 0 ? 1 : 0; // 0.idle, 1.walk
- 
     enemy->timer += dt;
     if(enemy->timer > 1) enemy->timer = 0;
- 
-    enemy->screen.x = enemy->world.x - player.world.x + player.screen.x;
-    enemy->screen.y = enemy->world.y - player.world.y + player.screen.y;
+    enemy->screen.x = enemy->world.x-player.world.x+player.screen.x;
+    enemy->screen.y = enemy->world.y-player.world.y+player.screen.y;
+    enemy->showHitbox = player.showStats;
 }
  
 void renderEnemy(Enemy enemy) {
@@ -114,6 +114,24 @@ void renderEnemy(Enemy enemy) {
         enemy.size/2
     };
     DrawTexturePro(texture, src, dst, pivot, 0, WHITE);
+
+    if(enemy.showHitbox) {
+        
+        Rectangle hitbox = {
+            enemy.size*enemy.hitbox.x,
+            enemy.size*enemy.hitbox.y,
+            enemy.size*enemy.hitbox.width,
+            enemy.size*enemy.hitbox.height
+        };
+        Rectangle box = {
+            enemy.screen.x-enemy.size/2+hitbox.x,
+            enemy.screen.y-enemy.size/2+hitbox.y,
+            hitbox.width,
+            hitbox.height
+        };         
+        
+        DrawRectangleLinesEx(box, 2, RED);
+    }
 }
  
 void unloadEnemy(Enemy *enemy) {        

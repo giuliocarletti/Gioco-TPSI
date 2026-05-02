@@ -18,10 +18,11 @@ Player initPlayer() {
     player.state = 0; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack
     player.timer = 0;
     player.health = 100;
-    player.hitbox.width = TILE_SIZE/2;
-    player.hitbox.height = TILE_SIZE/2;
-    player.hitbox.x = player.world.x;
-    player.hitbox.y = player.world.y;
+    player.hitbox.x = 0.3; // posizione all'interno dello sprite (in %)
+    player.hitbox.y = 0.5;
+    player.hitbox.width = 0.4;
+    player.hitbox.height = 0.4;
+    player.showStats = 0;
     return player;
 }
 
@@ -45,10 +46,7 @@ void updatePlayer(Player *player) {
     }
     if (IsKeyDown(KEY_SPACE))  {
         player->state = 4;
-    }
-    if (IsKeyPressed(KEY_O))  {
-        player->showStats = !player->showStats; // vedere le stats del player
-    }
+    }    
     double magnitude = sqrt(inputx*inputx+inputy*inputy);
     if(magnitude>0) {
         double xDirection = inputx/magnitude;
@@ -63,8 +61,6 @@ void updatePlayer(Player *player) {
     player->scroll.y += (player->world.y-player->scroll.y)*6*dt; // per dare un animazione di fluidita'
     player->screen.x = player->screenSize.x/2+(player->world.x-player->scroll.x); // il player sta al centro dello schermo
     player->screen.y = player->screenSize.y/2+(player->world.y-player->scroll.y); // ma con piccole variazioni date da scroll
-    player->hitbox.x = player->world.x-player->hitbox.width/2;
-    player->hitbox.y = player->world.y-player->hitbox.height/2;
 }
 
 void renderPlayer(Player player) {    
@@ -91,6 +87,7 @@ void renderPlayer(Player player) {
         player.size/2
     }; // punto da cui viene "preso" (il punto di rotazione e posizionamento)
     DrawTexturePro(texture, src, dst, pivot, 0, WHITE);
+
     // CONTROLLO ANIMAZIONE
     if(player.showStats) {
         int fontSize = 20;
@@ -103,8 +100,21 @@ void renderPlayer(Player player) {
         DrawText(text, xPadding, 70, fontSize, LIGHTGRAY);
         sprintf(text, "Timer del Player: %f", player.timer);
         DrawText(text, xPadding, 100, fontSize, LIGHTGRAY);
+                
+        Rectangle hitbox = {
+            player.size*player.hitbox.x,
+            player.size*player.hitbox.y,
+            player.size*player.hitbox.width,
+            player.size*player.hitbox.height
+        };
+        Rectangle box = {
+            player.screen.x-player.size/2+hitbox.x,
+            player.screen.y-player.size/2+hitbox.y,
+            hitbox.width,
+            hitbox.height
+        };         
         
-        //DrawRectangleLinesEx(hitbox, 1, RED);
+        DrawRectangleLinesEx(box, 2, RED);
     }    
 }
 
