@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "player.h"
 #include "enemy.h"
+#include "terrain.h"
  
 typedef enum {
     ENTITY_PLAYER,
@@ -12,8 +13,10 @@ typedef enum {
  
 typedef struct {
     EntityType type;
-    float yCoordinates; // coordinata Y nel mondo, usata per l'ordinamento
-    void *object;       // puntatore a Player o Enemy
+    Vector2 world;
+    Rectangle hitbox;
+    int speed;
+    void *object;       // puntatore a Player o Enemy    
 } Entity;
  
 typedef struct {
@@ -22,9 +25,10 @@ typedef struct {
         int length;
     } entities;
     int enemyCount;
+    Terrain terrain;
 } EntitiesManager;
  
-EntitiesManager initEntitiesManager(int nEnemy, Player *player, Vector2 playerWorld);
+EntitiesManager initEntitiesManager(int nEnemy, Player *player, Vector2 playerWorld, Terrain terrain);
 void updateEntitiesManager(EntitiesManager *entityManager, Player *player);
 void renderEntitiesManager(EntitiesManager *entityManager);
 void unloadEntitiesManager(EntitiesManager *entityManager);

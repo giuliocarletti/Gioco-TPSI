@@ -4,6 +4,8 @@
 #include "raylib.h"
 #include "config.h"
 
+typedef struct Terrain Terrain;
+
 typedef struct {
     Vector2 world;
     Vector2 screen;
@@ -19,6 +21,7 @@ typedef struct {
     Texture2D textures[5]; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack (da aggiungere)   
     Rectangle hitbox;
     Vector2 screenSize;   
+    bool *blockedDir;
     int prevState; 
 } Player;
 

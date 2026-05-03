@@ -27,6 +27,7 @@ typedef struct {
     int randomDirY;       // direzione random corrente Y
     Texture2D textures[4]; // 0.idle, 1.walk, 2.hurt, 3.death
     Rectangle hitbox;
+    bool *blockedDir;
     bool showHitbox;
 } Enemy;
  

@@ -2,11 +2,11 @@
  
 Game initGame() {
     Game game;
-    game.state   = STATE_PLAYING;
-    game.player  = initPlayer();
+    game.state = STATE_PLAYING;
+    game.player = initPlayer();
     game.terrain = initTerrain();
-    game.ui      = initUI();
-    game.entities = initEntitiesManager(20, &game.player, game.player.world);
+    game.ui = initUI();
+    game.entities = initEntitiesManager(20, &game.player, game.player.world, game.terrain);
     return game;
 }
  
@@ -26,21 +26,10 @@ void updateGame(Game *game) {
         updateEntitiesManager(&game->entities, &game->player);
     }
  
-    if (IsKeyPressed(KEY_F1)) {
+    if (IsKeyPressed(KEY_F11)) {
         ToggleBorderlessWindowed();
     }
 }
- 
-/*void renderGame(Game game) {
-    BeginDrawing();
-    ClearBackground(BLACK);
-    if (game.state == STATE_PLAYING) {
-        renderTerrain(game.terrain, game.player);
-        renderEntitiesManager(&game.entities);
-    }
-    //renderUI(game.ui); // da attivare quando la UI e' pronta
-    EndDrawing();
-}*/
  
 void renderGame(Game *game) {
     BeginDrawing();

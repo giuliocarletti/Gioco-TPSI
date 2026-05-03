@@ -4,22 +4,38 @@
  
 Enemy initEnemy(EnemyType type, Vector2 spawn) {
     Enemy enemy;
+
     enemy.speed = 2.5*TILE_SIZE;
     enemy.size = 1.5*TILE_SIZE;
     enemy.world = spawn;
+
     enemy.timer = 0;
     enemy.timerMovement = 0;
     enemy.state = 0;
     enemy.direction = 1;
     enemy.randomDirX = 0;
     enemy.randomDirY = 0;
+
     enemy.type = type;
     enemy.health = 100;
-    enemy.hitbox.x = 0.3; // posizione all'interno dello sprite (in %)
-    enemy.hitbox.y = 0.5;
-    enemy.hitbox.width = 0.4;
-    enemy.hitbox.height = 0.4;
     enemy.isAlive = true;
+
+    // posizioni all'interno dello sprite (in %) con origine in alto a destra
+    float xHitboxOffset = 0.3;
+    float yHitboxOffset = 0.5;
+    float hitboxWidth = 0.4;
+    float hitboxHeight = 0.4;
+
+    enemy.hitbox = (Rectangle) {
+        enemy.size*xHitboxOffset-enemy.size/2,
+        enemy.size*yHitboxOffset-enemy.size/2,
+        enemy.size*hitboxWidth,
+        enemy.size*hitboxHeight
+    };
+
+    int directions = 4; // est, ovest, sud, nord
+    enemy.blockedDir = malloc(sizeof(bool) * directions);
+    for(int i=0; i<directions; i++) enemy.blockedDir[i] = false;
    
     switch(type) {
         case CARLI:
@@ -69,29 +85,48 @@ void updateEnemy(Enemy *enemy, Player player) {
     } else {
         // MOVIMENTO RANDOM: cambia direzione ogni 1-3 secondi
         enemy->speed = 1*TILE_SIZE;
-        enemy->timerMovement -= dt;
+        enemy->timerMovement -= dt;        
         if(enemy->timerMovement <= 0) {
+
             enemy->randomDirX = GetRandomValue(-1, 1);
             enemy->randomDirY = GetRandomValue(-1, 1);
+
             enemy->timerMovement = (float)GetRandomValue(100, 300) / 100.0f;
         }
+
         inputx = enemy->randomDirX;
         inputy = enemy->randomDirY;
 
-    }
+    }    
+
     if(inputx != 0) enemy->direction = (inputx > 0) ? 1 : -1;
+
+    // controllo dei movimenti non bloccati
+    if(inputx ==  1) inputx = !enemy->blockedDir[0] ?  1 : 0;
+    if(inputx == -1) inputx = !enemy->blockedDir[1] ? -1 : 0;
+    if(inputy ==  1) inputy = !enemy->blockedDir[2] ?  1 : 0;
+    if(inputy == -1) inputy = !enemy->blockedDir[3] ? -1 : 0;
+
+
     double magnitude = sqrt(inputx*inputx+inputy*inputy);
+
     if(magnitude > 0) {
+
         double xDirection = inputx / magnitude;
         double yDirection = inputy / magnitude;
+
         enemy->world.x += xDirection*enemy->speed*dt;
         enemy->world.y += yDirection*enemy->speed*dt;
     }
+
     enemy->state = magnitude > 0 ? 1 : 0; // 0.idle, 1.walk
+    
     enemy->timer += dt;
     if(enemy->timer > 1) enemy->timer = 0;
+
     enemy->screen.x = enemy->world.x-player.world.x+player.screen.x;
     enemy->screen.y = enemy->world.y-player.world.y+player.screen.y;
+    
     enemy->showHitbox = player.showStats;
 }
  
@@ -127,20 +162,22 @@ void renderEnemy(Enemy enemy) {
 
     if(enemy.showHitbox) {
         
-        Rectangle hitbox = {
-            enemy.size*enemy.hitbox.x,
-            enemy.size*enemy.hitbox.y,
-            enemy.size*enemy.hitbox.width,
-            enemy.size*enemy.hitbox.height
-        };
         Rectangle box = {
-            enemy.screen.x-enemy.size/2+hitbox.x,
-            enemy.screen.y-enemy.size/2+hitbox.y,
-            hitbox.width,
-            hitbox.height
-        };         
+            enemy.screen.x+enemy.hitbox.x,
+            enemy.screen.y+enemy.hitbox.y,
+            enemy.hitbox.width,
+            enemy.hitbox.height
+        };       
+
+        Color boxColor = RED;
+        for(int i=0; i<4; i++) {
+            if(enemy.blockedDir[i]) {
+                boxColor = ORANGE;
+                break;
+            }
+        }
         
-        DrawRectangleLinesEx(box, 2, RED);
+        DrawRectangleLinesEx(box, 2, boxColor);
     }
 }
  

@@ -41,4 +41,7 @@
 #define COLOR_SECONDARY (Color){57,  62,  70,  255}
 #define COLOR_TERTIARY  (Color){223, 208, 184, 255}
 
+#define N_BLOCKED_TILES  5
+#define BLOCKED_TILES { 21, 23, 25, 33, 35 }
+
 #endif

@@ -5,49 +5,66 @@
 
 Player initPlayer() {
     Player player;
+
     player.world.x = TERRAIN_WIDTH/2*TILE_SIZE;
     player.world.y = TERRAIN_HEIGHT/2*TILE_SIZE;
     player.scroll = player.world;
     player.speed = 3*TILE_SIZE;
     player.size = 1.5*TILE_SIZE;
+    player.health = 100;
+
     player.textures[0] = LoadTexture(PLAYER_IDLE_PATH);
     player.textures[1] = LoadTexture(PLAYER_WALK_PATH);
     player.textures[2] = LoadTexture(PLAYER_HURT_PATH);
     player.textures[3] = LoadTexture(PLAYER_DEATH_PATH);
     player.textures[4] = LoadTexture(PLAYER_ATTACK_PATH);
+
     player.state = 0; // 0.idle, 1.walk, 2.hurt, 3.death, 4.attack
     player.timer = 0;
     player.attackTimer = 0;
-    player.health = 100;
-    player.hitbox.x = 0.3; // posizione all'interno dello sprite (in %)
-    player.hitbox.y = 0.5;
-    player.hitbox.width = 0.4;
-    player.hitbox.height = 0.4;
+
+    // posizioni all'interno dello sprite (in %) con origine in alto a destra
+    float xHitboxOffset = 0.3;
+    float yHitboxOffset = 0.5;
+    float hitboxWidth = 0.4;
+    float hitboxHeight = 0.4;
+
+    player.hitbox = (Rectangle) {
+        player.size*xHitboxOffset-player.size/2,
+        player.size*yHitboxOffset-player.size/2,
+        player.size*hitboxWidth,
+        player.size*hitboxHeight
+    };
+
+    int directions = 4; // est, ovest, sud, nord
+    player.blockedDir = malloc(sizeof(bool) * directions);
+    for(int i=0; i<directions; i++) player.blockedDir[i] = false;
+
     player.showStats = 0;
     return player;
 }
 
 void updatePlayer(Player *player) {   
-
     float dt = GetFrameTime();    
 
     int inputx = 0; // input da tastiera orizzontale
     int inputy = 0; // input da tastiera verticale
     
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        inputx = 1;
+        inputx = !player->blockedDir[0]? 1 : 0;
         player->direction = 1; // direzione 1 e' verso destra
     }
     if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        inputx = -1;
+        inputx = !player->blockedDir[1]? -1 : 0;
         player->direction = -1; // direzione -1 e' verso sinistra
     }
-    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {
-        inputy = -1;
-    }
     if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
-        inputy = 1;
+        inputy = !player->blockedDir[2]? 1 : 0;
     }
+    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {
+        inputy = !player->blockedDir[3]? -1 : 0;
+    }
+    
     // attacco: si attiva solo se non si sta gia' attaccando
     if (IsKeyPressed(KEY_SPACE) && player->state != 4) {
         player->state = 4;
@@ -91,8 +108,8 @@ void updatePlayer(Player *player) {
     float timerSpeed = player->state == 4 ? 2.5f : 1.0f; // se attacck avanza il timer 4x
     player->timer = player->timer > 1 ? 0 : player->timer + timerSpeed * dt; // avanza il timer in base alla velocita'
 
-    player->scroll.x += (player->world.x - player->scroll.x) * 6 * dt; // somma un valore che cresce gradualmente
-    player->scroll.y += (player->world.y - player->scroll.y) * 6 * dt; // per dare un animazione di fluidita'
+    player->scroll.x += (player->world.x - player->scroll.x) * 5 * dt; // somma un valore che cresce gradualmente
+    player->scroll.y += (player->world.y - player->scroll.y) * 5 * dt; // per dare un animazione di fluidita'
     player->screen.x = player->screenSize.x/2 + (player->world.x - player->scroll.x); // il player sta al centro dello schermo
     player->screen.y = player->screenSize.y/2 + (player->world.y - player->scroll.y); // ma con piccole variazioni date da scroll
 }
@@ -142,21 +159,23 @@ void renderPlayer(Player player) {
         DrawText(text, xPadding, 70, fontSize, LIGHTGRAY);
         sprintf(text, "Timer del Player: %f", player.timer);
         DrawText(text, xPadding, 100, fontSize, LIGHTGRAY);
-                
-        Rectangle hitbox = {
-            player.size*player.hitbox.x,
-            player.size*player.hitbox.y,
-            player.size*player.hitbox.width,
-            player.size*player.hitbox.height
-        };
+
+        Color boxColor = RED;
+        for(int i=0; i<4; i++) {
+            if(player.blockedDir[i]) {
+                boxColor = ORANGE;
+                break;
+            }
+        }
+                        
         Rectangle box = {
-            player.screen.x-player.size/2+hitbox.x,
-            player.screen.y-player.size/2+hitbox.y,
-            hitbox.width,
-            hitbox.height
+            player.screen.x+player.hitbox.x,
+            player.screen.y+player.hitbox.y,
+            player.hitbox.width,
+            player.hitbox.height
         };         
         
-        DrawRectangleLinesEx(box, 2, RED);
+        DrawRectangleLinesEx(box, 2, boxColor);
     }    
 }
 
@@ -166,4 +185,5 @@ void unloadPlayer(Player *player) {
     UnloadTexture(player->textures[2]);
     UnloadTexture(player->textures[3]);
     UnloadTexture(player->textures[4]);
+    free(player->blockedDir);
 }
